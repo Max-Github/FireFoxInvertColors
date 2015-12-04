@@ -1,2 +1,2 @@
 #Invert Colors
-A simple add-on that inverts the page colors.
+A simple FireFox add-on that inverts the web page colors.
