@@ -1,4 +1,6 @@
 html
 {
+    background-color: white;
+    color: black;
     filter: invert(100%);
 }
