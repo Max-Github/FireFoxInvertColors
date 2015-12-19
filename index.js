@@ -9,15 +9,14 @@ var style = Style({
   uri: './style.css'
 });
 
-if (!SStore.storage.GlobalState)
-{
+if (!SStore.storage.GlobalState) {
     SStore.storage.GlobalState = false;
 }
 
 var TabStatesArray = ['open', 'activate', 'ready'];
 for (var i = 0; i < TabStatesArray.length; i++)
 {
-    tabs.on(TabStatesArray[i], function(tab){
+    tabs.on(TabStatesArray[i], function(tab) {
         HandleState();
     });
 }    
@@ -32,11 +31,22 @@ var button = ToggleButton({
   }
 });
 
-function HandleState(){
-    if (SStore.storage.GlobalState){ 
+function HandleState() {
+    if (SStore.storage.GlobalState) {
       attach(style, tabs.activeTab);
     }
     else {
       detach(style, tabs.activeTab);
     }
 }
+
+exports.onUnload = function(reason) {
+    //called when add-on is
+    //    uninstalled
+    //    disabled
+    //    shutdown
+    //    upgraded
+    //    downgraded
+    button.destroy();
+    delete SStore.storage.GlobalState;
+};
