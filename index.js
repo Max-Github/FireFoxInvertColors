@@ -24,7 +24,7 @@ for (var i = 0; i < TabStatesArray.length; i++)
 var button = ToggleButton({
   id: "invert-colors",
   label: "Invert Page",
-  icon: "./contrast_high.png",
+  icon: "./contrast_high.svg",
   onChange: function(state) {
       SStore.storage.GlobalState = state.checked;
       HandleState();
