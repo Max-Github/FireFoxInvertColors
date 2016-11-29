@@ -1,10 +1,13 @@
 {
   "title": "Invert Colors",
   "name": "firefoxinvertcolors",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A simple add-on that inverts the page colors.",
   "main": "index.js",
   "author": "Max Badran",
+  "permissions": {
+    "private-browsing": true
+  },
   "engines": {
     "firefox": ">=38.0a1",
     "fennec": ">=38.0a1"
