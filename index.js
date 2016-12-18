@@ -1,9 +1,10 @@
 //var self = require('sdk/self');
-var tabs = require("sdk/tabs");
+var tabs = require('sdk/tabs');
 var { attach, detach } = require('sdk/content/mod');
 var { Style } = require('sdk/stylesheet/style');
-var { ToggleButton } = require("sdk/ui/button/toggle");
-var SStore = require("sdk/simple-storage");
+var { ToggleButton } = require('sdk/ui/button/toggle');
+var { Hotkey } = require('sdk/hotkeys');
+var SStore = require('sdk/simple-storage');
 
 var style = Style({
   uri: './style.css'
@@ -22,14 +23,23 @@ for (var i = 0; i < TabStatesArray.length; i++)
 }    
 
 var button = ToggleButton({
-  id: "invert-colors",
-  label: "Invert Page",
-  icon: "./contrast_high.svg",
+  id: 'invert-colors',
+  label: 'Invert Page',
+  icon: './contrast_high.svg',
   onChange: function(state) {
       SStore.storage.GlobalState = state.checked;
       HandleState();
   }
 });
+
+var toggleHotkey = Hotkey({
+    combo: "accel-shift-r",
+    onPress: function() {
+	SStore.storage.GlobalState = !SStore.storage.GlobalState;
+	HandleState();
+    }
+});
+
 
 function HandleState() {
     if (SStore.storage.GlobalState) {
