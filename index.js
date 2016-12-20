@@ -33,7 +33,7 @@ var button = ToggleButton({
 });
 
 var toggleHotkey = Hotkey({
-    combo: "accel-shift-r",
+    combo: "alt-shift-r",
     onPress: function() {
 	SStore.storage.GlobalState = !SStore.storage.GlobalState;
 	HandleState();
