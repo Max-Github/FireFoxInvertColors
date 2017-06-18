@@ -7,7 +7,7 @@ var { Hotkey } = require('sdk/hotkeys');
 var SStore = require('sdk/simple-storage');
 
 var style = Style({
-  uri: './style.css'
+    uri: './style.css'
 });
 
 if (!SStore.storage.GlobalState) {
@@ -23,30 +23,32 @@ for (var i = 0; i < TabStatesArray.length; i++)
 }    
 
 var button = ToggleButton({
-  id: 'invert-colors',
-  label: 'Invert Page',
-  icon: './contrast_high.svg',
-  onChange: function(state) {
-      SStore.storage.GlobalState = state.checked;
-      HandleState();
-  }
+    id: 'invert-colors',
+    label: 'Invert Page',
+    icon: './contrast_high.svg',
+    onChange: function(state) {
+        InvertColors();
+    }
 });
 
 var toggleHotkey = Hotkey({
     combo: "alt-shift-r",
     onPress: function() {
-	SStore.storage.GlobalState = !SStore.storage.GlobalState;
-	HandleState();
+	      InvertColors();
     }
 });
 
+function InvertColors() {
+    SStore.storage.GlobalState = !SStore.storage.GlobalState;
+    HandleState();
+}
 
 function HandleState() {
     if (SStore.storage.GlobalState) {
-      attach(style, tabs.activeTab);
+        attach(style, tabs.activeTab);
     }
     else {
-      detach(style, tabs.activeTab);
+        detach(style, tabs.activeTab);
     }
 }
 
