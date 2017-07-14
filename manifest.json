@@ -1,12 +1,14 @@
 {
     "manifest_version": 2,
-    "name": "firefoxinvertcolors",
-    "version": "0.1.1",
+    "name": "Firefox Invert Colors",
+    "version": "0.1.3",
     "author": "Max Badran",
     "description": "A simple add-on that inverts the page colors.",
     "homepage_url": "https://github.com/Max-Github/FireFoxInvertColors",
     "background": {
-        "scripts": ["background.js"]
+        "scripts": [
+            "background.js"
+        ]
     },
     "browser_action": {
         "default_icon": "icons/off.svg",
@@ -20,10 +22,14 @@
     },
     "commands": {
         "_execute_browser_action": {
-          "suggested_key": {
-            "default": "Alt+Shift+R"
-          }
+            "suggested_key": {
+                "default": "Alt+Shift+R"
+            }
         }
+    },
+    "options_ui": {
+        "page": "options.html",
+        "browser_style": true
     },
     "permissions": [
         "tabs",

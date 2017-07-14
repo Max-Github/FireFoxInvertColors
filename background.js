@@ -1,8 +1,8 @@
 function setColors(tabId) {
     var state = browser.storage.local.get("InvertColorsState");
     state.then((res) => {
-      setColorsToState(tabId, res.InvertColorsState);
-     });
+        setColorsToState(tabId, res.InvertColorsState);
+    });
 }
 
 function setColorsToState(tabId, state) {
@@ -13,54 +13,77 @@ function setColorsToState(tabId, state) {
     }
 }
 
-function toggleColors()
-{
+function toggleColors() {
     browser.storage.local.get("InvertColorsState").then((res) => {
         var state = res.InvertColorsState;
         if (state == true) {
-            browser.browserAction.setIcon({path: "icons/off.svg"});
-            browser.browserAction.setTitle({title: "Invert Colors"});
+            browser.browserAction.setIcon({ path: "icons/off.svg" });
+            browser.browserAction.setTitle({ title: "Invert Colors" });
         } else {
-            browser.browserAction.setIcon({path: "icons/on.svg"});
-            browser.browserAction.setTitle({title: "Revert Colors"});
+            browser.browserAction.setIcon({ path: "icons/on.svg" });
+            browser.browserAction.setTitle({ title: "Revert Colors" });
             state = false; //In case it is not defined.
         }
 
         var newStat = !state;
         browser.storage.local.set({ InvertColorsState: newStat });
-        
+
         browser.tabs.query({}).then((tabs) => {
-          for (var tab of tabs) {
-              setColorsToState(tab.id, newStat);
-          };
+            for (var tab of tabs) {
+                setColorsToState(tab.id, newStat);
+            };
         });
     });
 }
 
 function invertColors(tabId) {
     browser.tabs.insertCSS(tabId, {
-      file: "style.css"
+        file: "style.css"
     });
 }
 
 function revertColors(tabId) {
     browser.tabs.removeCSS(tabId, {
-      file: "style.css"
+        file: "style.css"
     });
 }
 
 function handleUpdated(tabId, changeInfo, tabInfo) {
-  if(changeInfo.status)
-  {
-    setColors(tabId);
-  }
+
+    if (changeInfo.status) {
+        setColors(tabId);
+    }
 }
 
+function handleStorageUpdate(changes, area) {
+    if (area == "local") {
+        for (var item of Object.keys(changes)) {
+            if (item == "InvertColorsState") {
+                browser.storage.local.get("InvertColorsState").then((res) => {
+                    var state = res.InvertColorsState;
+
+                    if (state != true) {
+                        state = false;
+                    }
+
+                    browser.tabs.query({}).then((tabs) => {
+                        for (var tab of tabs) {
+                            setColorsToState(tab.id, state);
+                        };
+                    });
+                });
+            }
+        }
+    }
+}
+
+
 browser.contextMenus.create({
-  id: "InvertColors",
-  title: "Invert Colors"
+    id: "InvertColors",
+    title: "Invert Colors"
 });
 
 browser.tabs.onUpdated.addListener(handleUpdated);
+browser.storage.onChanged.addListener(handleStorageUpdate)
 browser.browserAction.onClicked.addListener(toggleColors);
 browser.contextMenus.onClicked.addListener(toggleColors);
