@@ -4,6 +4,17 @@ function loadOption() {
 	});
 }
 
+function handleStorageUpdate(changes, area) {
+    if (area == "local") {
+        for (var item of Object.keys(changes)) {
+            if (item == "InvertColorsState") {
+                browser.storage.local.get("InvertColorsState").then((res) => {
+                    showOption(res.InvertColorsState);
+                });
+            }
+        }
+    }
+}
 function showOption(state) {
 
 	if (state == true) {
@@ -27,8 +38,6 @@ function toggleOption(e) {
 		browser.storage.local.set({
 			InvertColorsState: newStat
 		});
-
-		showOption(newStat);
 	});
 
 	e.preventDefault();
@@ -36,3 +45,4 @@ function toggleOption(e) {
 
 document.addEventListener('DOMContentLoaded', loadOption);
 document.querySelector("form").addEventListener("submit", toggleOption);
+browser.storage.onChanged.addListener(handleStorageUpdate);
