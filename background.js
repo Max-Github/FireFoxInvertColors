@@ -27,12 +27,6 @@ function toggleColors() {
 
         var newStat = !state;
         browser.storage.local.set({ InvertColorsState: newStat });
-
-        browser.tabs.query({}).then((tabs) => {
-            for (var tab of tabs) {
-                setColorsToState(tab.id, newStat);
-            };
-        });
     });
 }
 
