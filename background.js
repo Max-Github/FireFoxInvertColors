@@ -16,15 +16,6 @@ function setColorsToState(tabId, state) {
 function toggleColors() {
     browser.storage.local.get("InvertColorsState").then((res) => {
         var state = res.InvertColorsState;
-        if (state == true) {
-            browser.browserAction.setIcon({ path: "icons/off.svg" });
-            browser.browserAction.setTitle({ title: "Invert Colors" });
-        } else {
-            browser.browserAction.setIcon({ path: "icons/on.svg" });
-            browser.browserAction.setTitle({ title: "Revert Colors" });
-            state = false; //In case it is not defined.
-        }
-
         var newStat = !state;
         browser.storage.local.set({ InvertColorsState: newStat });
     });
@@ -55,6 +46,14 @@ function handleStorageUpdate(changes, area) {
             if (item == "InvertColorsState") {
                 browser.storage.local.get("InvertColorsState").then((res) => {
                     var state = res.InvertColorsState;
+		    if (state != true) {
+			browser.browserAction.setIcon({ path: "icons/off.svg" });
+			browser.browserAction.setTitle({ title: "Invert Colors" });
+		    } else {
+			browser.browserAction.setIcon({ path: "icons/on.svg" });
+			browser.browserAction.setTitle({ title: "Revert Colors" });
+		    }
+
 
                     if (state != true) {
                         state = false;
