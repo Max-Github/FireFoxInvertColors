@@ -25,12 +25,12 @@ function toggleColors() {
             state = false; //In case it is not defined.
         }
 
-        var newStat = !state;
-        browser.storage.local.set({ InvertColorsState: newStat });
+        var newState = !state;
+        browser.storage.local.set({ InvertColorsState: newState });
 
         browser.tabs.query({}).then((tabs) => {
             for (var tab of tabs) {
-                setColorsToState(tab.id, newStat);
+                setColorsToState(tab.id, newState);
             };
         });
     });
