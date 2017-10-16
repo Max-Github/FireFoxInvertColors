@@ -1,6 +1,11 @@
 html
 {
+    background-color: black;
+}
+
+body
+{
+    filter: invert(100%);
     background-color: white;
     color: black;
-    filter: invert(100%);
 }
