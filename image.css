@@ -1,4 +1,4 @@
-img
+img, svg, video, canvas, [style*=".jpg"], [style*=".png"], [style*=".gif"]
 {
     filter: invert(100%);
 }
