@@ -1,38 +1,23 @@
-function loadOption() {
-	browser.storage.local.get('InvertColorsState').then((res) => {
-		showOption(res.InvertColorsState);
+function loadOptions() {
+	browser.storage.local.get().then((res) => {
+		showOption(res.InvertColorsState, res.ImgColorNoInvert);
 	});
 }
 
-function showOption(state) {
-
-	if (state == true) {
-		document.querySelector("#InvertColorsState").innerHTML = "On";
-	}
-	else {
-		document.querySelector("#InvertColorsState").innerHTML = "Off";
-	}
+function showOption(state, imgNoInvert) {
+	document.querySelector("#InvertColorsState").checked = state;
+	document.querySelector('#ImgColorNoInvert').checked = imgNoInvert;
 }
 
-function toggleOption(e) {
-	browser.storage.local.get('InvertColorsState').then((res) => {
 
-		var state = res.InvertColorsState;
-
-		var newStat = true;
-		if (state == true) {
-			newStat = false;
-		}
-
-		browser.storage.local.set({
-			InvertColorsState: newStat
-		});
-
-		showOption(newStat);
+function updateOptions(e) {
+	browser.storage.local.set({
+		InvertColorsState: document.querySelector('#InvertColorsState').checked,
+		ImgColorNoInvert: document.querySelector('#ImgColorNoInvert').checked
 	});
 
 	e.preventDefault();
 }
 
-document.addEventListener('DOMContentLoaded', loadOption);
-document.querySelector("form").addEventListener("submit", toggleOption);
+document.addEventListener('DOMContentLoaded', loadOptions);
+document.querySelector("form").addEventListener("submit", updateOptions);
