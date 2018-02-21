@@ -37,23 +37,21 @@ function toggleColors(obj) {
 
 function invertImg(tabId, imgNoInvert) {
     if (imgNoInvert)
-      browser.tabs.insertCSS(tabId, { file: "image.css" });
+      browser.tabs.insertCSS(tabId, { file: "image.css", allframes: true });
     else
-      browser.tabs.removeCSS(tabId, { file: "image.css" });
+      browser.tabs.removeCSS(tabId, { file: "image.css", allframes: true });
 }
 
 function invertColors(tabId, imgNoInvert) {
     browser.tabs.insertCSS(tabId, {
-        file: "style.css"
-    });
+        file: "style.css", allframes: true });
     invertImg(tabId, imgNoInvert);
 }
 
 function revertColors(tabId) {
     invertImg(tabId, false);
     browser.tabs.removeCSS(tabId, {
-        file: "style.css"
-    });
+        file: "style.css", allframes: true });
 }
 
 
