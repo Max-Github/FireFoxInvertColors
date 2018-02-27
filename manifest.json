@@ -32,6 +32,7 @@
         "browser_style": true
     },
     "permissions": [
+        "sessions",
         "tabs",
         "storage",
         "contextMenus",
