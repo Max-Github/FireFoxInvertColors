@@ -1,3 +1,6 @@
+function nullFunc() {
+}
+
 function setColors(tabId) {
     browser.storage.local.get().then((res) => {
         setColorsToState(tabId, res.InvertColorsState, res.ImgColorNoInvert);
@@ -6,24 +9,29 @@ function setColors(tabId) {
 
 function setColorsToState(tabId, state, imgNoInvert) {
     if (state == true) {
-        invertColors(tabId, imgNoInvert);
+        invertColors(tabId);
+        if (imgNoInvert) invertImg(tabId);
     } else {
+        revertImg(tabId);
         revertColors(tabId);
     }
+    browser.sessions.setTabValue(tabId, "invertColors", state).then(nullFunc(), nullFunc());
+    browser.sessions.setTabValue(tabId, "imgNoInvert", imgNoInvert).then(nullFunc(), nullFunc());
 }
 
-function toggleColors(obj) {
+function toggleColors(obj, tab) {
     browser.storage.local.get().then((res) => {
+      if (tab) {
+        browser.sessions.getTabValue(tab.id, "invertColors").then( tabState => {
+          tabState = !tabState;
+          browser.sessions.getTabValue(tab.id, "imgNoInvert").then( imgNoInvert => {
+            setColorsToState(tab.id, tabState, res.ImgColorNoInvert);
+          }, nullFunc());
+        }, nullFunc());
+      } else {
         var state = res.InvertColorsState ? res.InvertColorsState : false;
         state = obj != false ? !state : state;
-
-        if (state) {
-            browser.browserAction.setIcon({ path: "icons/on.svg" });
-            browser.browserAction.setTitle({ title: "Revert Colors" });
-        } else {
-            browser.browserAction.setIcon({ path: "icons/off.svg" });
-            browser.browserAction.setTitle({ title: "Invert Colors" });
-        }
+        setIconState(state);
 
         browser.storage.local.set({ InvertColorsState: state, ImgColorNoInvert: res.ImgColorNoInvert });
 
@@ -32,25 +40,40 @@ function toggleColors(obj) {
                 setColorsToState(tab.id, state, res.ImgColorNoInvert);
             };
         });
+      }
     });
 }
 
-function invertImg(tabId, imgNoInvert) {
-    if (imgNoInvert)
-      browser.tabs.insertCSS(tabId, { file: "image.css" });
-    else
-      browser.tabs.removeCSS(tabId, { file: "image.css" });
+function setIconState(state) {
+    if (state) {
+        browser.browserAction.setIcon({ path: "icons/on.svg" });
+        browser.browserAction.setTitle({ title: "Revert Colors" });
+    } else {
+        browser.browserAction.setIcon({ path: "icons/off.svg" });
+        browser.browserAction.setTitle({ title: "Invert Colors" });
+    }
 }
 
-function invertColors(tabId, imgNoInvert) {
+function invertImg(tabId) {
+    browser.tabs.insertCSS(tabId, {
+        file: "image.css"
+    });
+}
+
+function revertImg(tabId) {
+    browser.tabs.removeCSS(tabId, {
+        file: "image.css"
+    });
+}
+
+
+function invertColors(tabId) {
     browser.tabs.insertCSS(tabId, {
         file: "style.css"
     });
-    invertImg(tabId, imgNoInvert);
 }
 
 function revertColors(tabId) {
-    invertImg(tabId, false);
     browser.tabs.removeCSS(tabId, {
         file: "style.css"
     });
@@ -70,6 +93,7 @@ function handleStorageUpdate(changes, area) {
             if (item == "InvertColorsState" || item == "ImgColorNoInvert") {
                 browser.storage.local.get().then((res) => {
                     var state = res.InvertColorsState ? res.InvertColorsState : false;
+                    setIconState(state);
 
                     browser.tabs.query({}).then((tabs) => {
                         for (var tab of tabs) {
