@@ -1,0 +1,46 @@
+<html>
+  <head>
+    <title>iframe Canvas</title>
+    <link rel="stylesheet" href="styles_test.css"/>
+  </head>
+  <body class="test">
+    <div class="test" id="canvasParent2"><canvas id="canvas2"/></div>
+  </body>
+
+ <script>
+    function onResize() {
+      var p = document.getElementById('canvasParent2');
+      if (p) {
+        var pw = p.clientWidth;
+        var ph = p.clientHeight;
+      }
+      var canvas1 = document.getElementById('canvas2');
+      if (canvas1 && canvas1.getContext) {
+        var width = canvas1.width;
+        var height = canvas1.height;
+        canvas1.width = pw;
+        canvas1.height = ph;
+        width = canvas1.width;
+        height = canvas1.height;
+        var center_x = Math.round(width / 2);
+        var center_y = Math.round(height / 2);
+        var radius = Math.round(width / 2) - 5;
+        context = canvas1.getContext('2d');
+        context.beginPath();
+        context.strokeStyle = "red";
+        context.lineWidth = 4.0;
+        context.arc(center_x, center_y, radius, 0, Math.PI * 2);
+        var gradient = context.createRadialGradient(center_x, center_y, radius, center_x, center_y, 0);
+        gradient.addColorStop(0, 'blue');
+        gradient.addColorStop(1, 'transparent');
+        context.fillStyle = gradient;
+        context.fill();
+        context.stroke();
+        context.closePath();
+      }
+    }
+
+    onResize();
+    window.onresize = onResize;
+  </script>
+</html>
