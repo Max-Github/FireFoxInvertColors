@@ -26,6 +26,7 @@ function toggleColors(obj, tab) {
           tabState = !tabState;
           browser.sessions.getTabValue(tab.id, "imgNoInvert").then( imgNoInvert => {
             setColorsToState(tab.id, tabState, res.ImgColorNoInvert);
+            setPageIconState(tab, tabState);
           }, nullFunc());
         }, nullFunc());
       } else {
@@ -54,6 +55,16 @@ function setIconState(state) {
     }
 }
 
+function setPageIconState(tab, state) {
+    if (state) {
+        browser.pageAction.setIcon({tabId: tab.id, path: "icons/on.svg" });
+        browser.pageAction.setTitle({tabId: tab.id, title: "Revert Current Page Colors" });
+    } else {
+        browser.pageAction.setIcon({tabId: tab.id, path: "icons/off.svg" });
+        browser.pageAction.setTitle({tabId: tab.id, title: "Invert Current Page Colors" });
+    }
+}
+
 function invertImg(tabId) {
     browser.tabs.insertCSS(tabId, {
         file: "image.css"
@@ -65,7 +76,6 @@ function revertImg(tabId) {
         file: "image.css"
     });
 }
-
 
 function invertColors(tabId) {
     browser.tabs.insertCSS(tabId, {
@@ -79,9 +89,8 @@ function revertColors(tabId) {
     });
 }
 
-
 function handleUpdated(tabId, changeInfo, tabInfo) {
-
+    browser.pageAction.show(tabId);
     if (changeInfo.status) {
         setColors(tabId);
     }
@@ -106,7 +115,6 @@ function handleStorageUpdate(changes, area) {
     }
 }
 
-
 browser.contextMenus.create({
     id: "InvertColors",
     title: "Invert Colors"
@@ -115,6 +123,9 @@ browser.contextMenus.create({
 browser.tabs.onUpdated.addListener(handleUpdated);
 browser.storage.onChanged.addListener(handleStorageUpdate);
 browser.browserAction.onClicked.addListener(toggleColors);
+browser.pageAction.onClicked.addListener((tab) => {
+    toggleColors(true,tab);
+});
 browser.contextMenus.onClicked.addListener(toggleColors);
 
 toggleColors(false);
