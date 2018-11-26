@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Invert Colors",
-    "version": "0.1.6",
+    "version": "0.1.6.1",
     "author": "Max Badran",
     "description": "A simple add-on that inverts the page colors.",
     "homepage_url": "https://github.com/Max-Github/FireFoxInvertColors",
