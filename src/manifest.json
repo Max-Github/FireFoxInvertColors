@@ -3,7 +3,7 @@
     "name": "Invert Colors",
     "version": "0.1.6.1",
     "author": "Max Badran",
-    "description": "A simple add-on that inverts the page colors.",
+    "description": "A simple add-on that inverts page and/or image colors.",
     "homepage_url": "https://github.com/Max-Github/FireFoxInvertColors",
     "background": {
         "scripts": [

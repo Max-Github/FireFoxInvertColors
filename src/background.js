@@ -3,20 +3,21 @@ function nullFunc() {
 
 function setColors(tabId) {
     browser.storage.local.get().then((res) => {
-        setColorsToState(tabId, res.InvertColorsState, res.ImgColorNoInvert);
+        setColorsToState(tabId, res.InvertColorsState, res.InvertPage, res.InvertImage);
     });
 }
 
-function setColorsToState(tabId, state, imgNoInvert) {
+function setColorsToState(tabId, state, invertPage, invertImage) {
     if (state == true) {
-        invertColors(tabId);
-        if (imgNoInvert) invertImg(tabId);
+        if (invertPage) invertColors(tabId);
+        if (invertImage != invertPage) invertImg(tabId);
     } else {
         revertImg(tabId);
         revertColors(tabId);
     }
     browser.sessions.setTabValue(tabId, "invertColors", state).then(nullFunc(), nullFunc());
-    browser.sessions.setTabValue(tabId, "imgNoInvert", imgNoInvert).then(nullFunc(), nullFunc());
+    browser.sessions.setTabValue(tabId, "invertPage", invertPage).then(nullFunc(), nullFunc());
+    browser.sessions.setTabValue(tabId, "invertImage", invertImage).then(nullFunc(), nullFunc());
 }
 
 function toggleColors(obj, tab) {
@@ -24,9 +25,11 @@ function toggleColors(obj, tab) {
       if (tab) {
         browser.sessions.getTabValue(tab.id, "invertColors").then( tabState => {
           tabState = !tabState;
-          browser.sessions.getTabValue(tab.id, "imgNoInvert").then( imgNoInvert => {
-            setColorsToState(tab.id, tabState, res.ImgColorNoInvert);
-            setPageIconState(tab, tabState);
+          browser.sessions.getTabValue(tab.id, "invertPage").then( invertPage => {
+            browser.sessions.getTabValue(tab.id, "invertImage").then( invertImage => {
+                setColorsToState(tab.id, tabState, res.InvertPage, res.InvertImage);
+                setPageIconState(tab, tabState);
+            }, nullFunc());
           }, nullFunc());
         }, nullFunc());
       } else {
@@ -34,11 +37,11 @@ function toggleColors(obj, tab) {
         state = obj != false ? !state : state;
         setIconState(state);
 
-        browser.storage.local.set({ InvertColorsState: state, ImgColorNoInvert: res.ImgColorNoInvert });
+        browser.storage.local.set({ InvertColorsState: state, InvertPage: res.InvertPage, InvertImage: res.InvertImage });
 
         browser.tabs.query({}).then((tabs) => {
             for (var tab of tabs) {
-                setColorsToState(tab.id, state, res.ImgColorNoInvert);
+                setColorsToState(tab.id, state, res.InvertPage, res.InvertImage);
             };
         });
       }
@@ -99,14 +102,14 @@ function handleUpdated(tabId, changeInfo, tabInfo) {
 function handleStorageUpdate(changes, area) {
     if (area == "local") {
         for (var item of Object.keys(changes)) {
-            if (item == "InvertColorsState" || item == "ImgColorNoInvert") {
+            if (item == "InvertColorsState" || item == "InvertPageOnly" || item == "InvertPageAndImage" || item == "InvertImageOnly") {
                 browser.storage.local.get().then((res) => {
                     var state = res.InvertColorsState ? res.InvertColorsState : false;
                     setIconState(state);
 
                     browser.tabs.query({}).then((tabs) => {
                         for (var tab of tabs) {
-                            setColorsToState(tab.id, state, res.ImgColorNoInvert);
+                            setColorsToState(tab.id, state, res.InvertPage, res.InvertImage);
                         };
                     });
                 });
