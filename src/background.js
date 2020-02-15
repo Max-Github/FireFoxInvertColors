@@ -19,7 +19,7 @@ function setColorsToState(tabId, state, imgNoInvert) {
     browser.sessions.setTabValue(tabId, "imgNoInvert", imgNoInvert).then(nullFunc(), nullFunc());
 }
 
-function toggleColors(obj, tab) {
+function toggleColors(changeState, tab) {
     browser.storage.local.get().then((res) => {
       if (tab) {
         browser.sessions.getTabValue(tab.id, "invertColors").then( tabState => {
@@ -31,7 +31,7 @@ function toggleColors(obj, tab) {
         }, nullFunc());
       } else {
         var state = res.InvertColorsState ? res.InvertColorsState : false;
-        state = obj != false ? !state : state;
+        state = changeState ? !state : state;
         setIconState(state);
 
         browser.storage.local.set({ InvertColorsState: state, ImgColorNoInvert: res.ImgColorNoInvert });
@@ -43,6 +43,11 @@ function toggleColors(obj, tab) {
         });
       }
     });
+}
+
+// for wrapping onClickData parameter, see: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/menus/onClicked#Parameters
+function toggleColorsContextMenu(tabInfo, onClickData){
+	toggleColors(true);
 }
 
 function setIconState(state) {
@@ -122,10 +127,10 @@ browser.contextMenus.create({
 
 browser.tabs.onUpdated.addListener(handleUpdated);
 browser.storage.onChanged.addListener(handleStorageUpdate);
-browser.browserAction.onClicked.addListener(toggleColors);
+browser.browserAction.onClicked.addListener(toggleColorsContextMenu);
 browser.pageAction.onClicked.addListener((tab) => {
     toggleColors(true,tab);
 });
-browser.contextMenus.onClicked.addListener(toggleColors);
+browser.contextMenus.onClicked.addListener(toggleColorsContextMenu);
 
 toggleColors(false);
