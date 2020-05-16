@@ -10,8 +10,10 @@
       <label>Invert Colors State:</label>
       <input type="checkbox" id="InvertColorsState"/>
       <br/>
-      <label>Do not invert images:</label>
-      <input type="checkbox" id="ImgColorNoInvert"/>
+      <label>What to invert:</label><br>
+      <input type="radio" name="InvertItems" value="InvertPageOnly">Pages only<br>
+      <input type="radio" name="InvertItems" value="InvertPageAndImage">Pages and images<br>
+      <input type="radio" name="InvertItems" value="InvertImageOnly">Images only<br>  
       <br/>
       <button type="submit">Save</button>
   </form>

@@ -1,21 +1,28 @@
 function loadOptions() {
 	browser.storage.local.get().then((res) => {
-		showOption(res.InvertColorsState, res.ImgColorNoInvert);
+		showOption(res.InvertColorsState, res.InvertPage, res.InvertImage);
 	});
 }
 
-function showOption(state, imgNoInvert) {
+function showOption(state, invertPage, invertImage) {
 	document.querySelector("#InvertColorsState").checked = state;
-	document.querySelector('#ImgColorNoInvert').checked = imgNoInvert;
+        if (invertPage && !invertImage || !invertPage && !invertImage)
+            document.querySelector('input[name=InvertItems]:checked').value = "InvertPageOnly";
+        if (invertPage && invertImage)
+            document.querySelector('input[name=InvertItems]:checked').value = "InvertPageAndImage";
+        if (!invertPage && invertImage)
+            document.querySelector('input[name=InvertItems]:checked').value = "InvertImageOnly";
 }
 
 
 function updateOptions(e) {
 	browser.storage.local.set({
 		InvertColorsState: document.querySelector('#InvertColorsState').checked,
-		ImgColorNoInvert: document.querySelector('#ImgColorNoInvert').checked
+		InvertPage: document.querySelector('input[name=InvertItems]:checked').value == "InvertPageAndImage"
+                         || document.querySelector('input[name=InvertItems]:checked').value == "InvertPageOnly",
+		InvertImage: document.querySelector('input[name=InvertItems]:checked').value == "InvertPageAndImage"
+                          || document.querySelector('input[name=InvertItems]:checked').value == "InvertImageOnly"
 	});
-
 	e.preventDefault();
 }
 
