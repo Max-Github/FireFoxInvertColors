@@ -9,7 +9,6 @@ function showOption(state, imgNoInvert) {
 	document.querySelector('#ImgColorNoInvert').checked = imgNoInvert;
 }
 
-
 function updateOptions(e) {
 	browser.storage.local.set({
 		InvertColorsState: document.querySelector('#InvertColorsState').checked,
