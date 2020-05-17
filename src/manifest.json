@@ -13,7 +13,8 @@
     "browser_action": {
         "default_icon": "icons/off.svg",
         "default_title": "Invert Colors",
-        "browser_style": true
+        "browser_style": true,
+        "default_popup": "popup/options.html"
     },
     "page_action": {
         "default_icon": "icons/off.svg",
@@ -26,15 +27,17 @@
         }
     },
     "commands": {
-        "_execute_browser_action": {
+        "global_invert": {
             "suggested_key": {
                 "default": "Alt+Shift+R"
-            }
+            },
+            "description": "Inverts Colors Globally."
         },
         "_execute_page_action": {
             "suggested_key": {
                 "default": "Alt+R"
-            }
+            },
+            "description": "Inverts Colors for the Current Tab."
         }
     },
     "options_ui": {
@@ -43,6 +46,7 @@
     },
     "permissions": [
         "sessions",
+        "activeTab",
         "tabs",
         "storage",
         "contextMenus",

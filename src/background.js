@@ -49,7 +49,7 @@ function toggleColors(changeState, tab) {
 
 // for wrapping onClickData parameter, see: https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/menus/onClicked#Parameters
 function toggleColorsContextMenu(tabInfo, onClickData) {
-    toggleColors(true);
+    toggleColors(true, tabInfo);
 }
 
 function setIconState(state) {
@@ -58,14 +58,14 @@ function setIconState(state) {
             path: "icons/on.svg"
         });
         browser.browserAction.setTitle({
-            title: "Revert Colors"
+            title: "Colors Inverted"
         });
     } else {
         browser.browserAction.setIcon({
             path: "icons/off.svg"
         });
         browser.browserAction.setTitle({
-            title: "Invert Colors"
+            title: "Colors Normal"
         });
     }
 }
@@ -93,9 +93,23 @@ function setPageIconState(tab, state) {
 }
 
 function invertImg(tabId) {
-    browser.tabs.insertCSS(tabId, {
-        file: "image.css"
-    });
+    if (tabId) {
+        browser.storage.local.get("urlList").then(function (res) {
+            res.urlList = res.urlList || {}
+
+            browser.tabs.get(tabId).then(function (tab) {
+                if (!(toBaseURL(tab.url) in res.urlList)) {
+                    browser.tabs.insertCSS(tabId, {
+                        file: "image.css"
+                    });
+                }
+            });
+        })
+    } else {
+        browser.tabs.insertCSS(tabId, {
+            file: "image.css"
+        });
+    }
 }
 
 function revertImg(tabId) {
@@ -105,9 +119,23 @@ function revertImg(tabId) {
 }
 
 function invertColors(tabId) {
-    browser.tabs.insertCSS(tabId, {
-        file: "style.css"
-    });
+    if (tabId) {
+        browser.storage.local.get("urlList").then(function (res) {
+            res.urlList = res.urlList || {}
+
+            browser.tabs.get(tabId).then(function (tab) {
+                if (!(toBaseURL(tab.url) in res.urlList)) {
+                    browser.tabs.insertCSS(tabId, {
+                        file: "style.css"
+                    });
+                }
+            });
+        })
+    } else {
+        browser.tabs.insertCSS(tabId, {
+            file: "style.css"
+        });
+    }
 }
 
 function revertColors(tabId) {
@@ -142,6 +170,10 @@ function handleStorageUpdate(changes, area) {
     }
 }
 
+function toBaseURL(fullURL) {
+    return fullURL.replace(/(http(s)?:\/\/)|(\/.*){1}/g, '');
+}
+
 browser.contextMenus.create({
     id: "InvertColors",
     title: "Invert Colors"
@@ -149,10 +181,19 @@ browser.contextMenus.create({
 
 browser.tabs.onUpdated.addListener(handleUpdated);
 browser.storage.onChanged.addListener(handleStorageUpdate);
-browser.browserAction.onClicked.addListener(toggleColorsContextMenu);
 browser.pageAction.onClicked.addListener((tab) => {
     toggleColors(true, tab);
 });
-browser.contextMenus.onClicked.addListener(toggleColorsContextMenu);
+browser.contextMenus.onClicked.addListener((info, tab) => {
+    toggleColorsContextMenu(tab, info);
+});
+
+browser.commands.onCommand.addListener((command) => {
+
+    if (command === "global_invert") {
+        toggleColors(true);
+    }
+
+});
 
 toggleColors(false);

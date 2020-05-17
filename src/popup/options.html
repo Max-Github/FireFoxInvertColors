@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <style>
+    html {
+      background-color: black;
+    }
+
+    body {
+      filter: invert(80%);
+      background-color: white;
+      color: black;
+      padding: 0.5em;
+    }
+
+    #mainForm {
+      margin: 2em;
+    }
+
+    ul#listOfURLsToExclude li .urlToClear {
+      display: inline-block;
+      position: absolute;
+      left: 1px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <section>
+    <form id="mainForm">
+      <label>Invert Colors State:</label>
+      <input type="checkbox" id="InvertColorsState" />
+      <br />
+      <label>Do not invert images:</label>
+      <input type="checkbox" id="ImgColorNoInvert" />
+      <br />
+      <br />
+      <button type="submit">Save</button>
+    </form>
+    <hr>
+    <form id="excludeURL">
+      <label>Exclude URL:</label>
+      <input type="hidden" name="urlToExclude" id="urlToExclude" value=""></input>
+      <button type="submit" name="add">Add Current Page</button>
+    </form>
+    <h5>List of Excluded URLs:</h5>
+    <ul id="listOfURLsToExclude">
+
+    </ul>
+    <hr>
+    <h5>Keyboard shortcuts:</h5>
+    <ul>
+      <li><b>Alt+R</b>: invert colors for a current tab.</li>
+      <li><b>Alt+Shift+R</b>: globally invert colors.</li>
+    </ul>
+  </section>
+  <script src="options.js"></script>
+</body>
+
+</html>
