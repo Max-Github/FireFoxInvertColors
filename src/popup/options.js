@@ -8,7 +8,7 @@ function showOption(state, imgNoInvert, urlList) {
 	document.querySelector("#InvertColorsState").checked = state;
 	document.querySelector('#ImgColorNoInvert').checked = imgNoInvert;
 
-	document.querySelector('#listOfURLsToExclude').innerHTML = "";
+	document.querySelector('#listOfURLsToExclude').innerText = "";
 
 	for (let [url, action] of Object.entries(urlList)) {
 		let li = document.createElement("li");
@@ -16,11 +16,11 @@ function showOption(state, imgNoInvert, urlList) {
 		var clear = document.createElement("span");
 		clear.setAttribute("id", url);
 		clear.setAttribute("class", "urlToClear");
-		clear.innerHTML = "&nbsp;&#10007;&nbsp;";
+		clear.innerText = "[✗]";
 		clear.onclick = clearURLToExclusionList;
 
 		var urlSpan = document.createElement("span");
-		urlSpan.innerHTML = url;
+		urlSpan.innerText = url;
 
 		li.appendChild(clear);
 		li.appendChild(urlSpan);
